@@ -9,8 +9,7 @@ class Mahasiswa extends Model
 {
     use HasFactory;
 
-    protected $table = 'mahasiswa'; // Jika nama tabel Anda berbeda dari konvensi
-
+    protected $table = 'mahasiswa'; 
     protected $fillable = [
         'nim',
         'nama',
@@ -20,9 +19,12 @@ class Mahasiswa extends Model
         'program_studi',
         'angkatan',
         'email',
+        'status',
+        'agama',
+        
     ];
 
     protected $casts = [
-        'tanggal_lahir' => 'date',  // Pastikan tanggal_lahir di-cast sebagai date
+        'tanggal_lahir' => 'date', // Menjadikan tanggal_lahir sebagai tipe data date
     ];
 }

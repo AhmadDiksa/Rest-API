@@ -10,5 +10,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('dosen', DosenController::class);
-Route::apiResource('mahasiswa', MahasiswaController::class);
+
+
+Route::get('/mahasiswa', [MahasiswaController::class, 'index']);
+Route::post('/mahasiswa', [MahasiswaController::class, 'store']);
+Route::get('/mahasiswa/nim/{nim}', [MahasiswaController::class, 'showByNim']);
+Route::put('/mahasiswa/{id}', [MahasiswaController::class, 'update']);
+Route::put('/mahasiswa/nim/{nim}', [MahasiswaController::class, 'updateByNim']);
+Route::delete('/mahasiswa/nim/{nim}', [MahasiswaController::class, 'destroyByNim']);
+
+
 
