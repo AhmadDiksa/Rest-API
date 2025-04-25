@@ -28,3 +28,11 @@ class DosenSeeder extends Seeder
         ]);
     }
 }
+
+// \App\Models\User::create([
+//     'name' => 'diksa',
+//     'email' => 'diksa@example.com',
+//     'password' => bcrypt('12345678')
+//    ]);
+
+   

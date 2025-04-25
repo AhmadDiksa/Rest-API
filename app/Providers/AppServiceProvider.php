@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Route::aliasMiddleware('auth.basic', AuthenticateWithBasicAuth::class);
     }
 }
