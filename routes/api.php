@@ -20,7 +20,7 @@ Route::put('/mahasiswa/{id}', [MahasiswaController::class, 'update']);
 Route::put('/mahasiswa/nim/{nim}', [MahasiswaController::class, 'updateByNim']);
 Route::delete('/mahasiswa/nim/{nim}', [MahasiswaController::class, 'destroyByNim']);
 
-Route::middleware('api.key')->Route::get('/data', function () {
+Route::middleware('api.key')->get('/data', function () {
     return response()->json([
         'status' => true,
         'message' => 'Access granted',
