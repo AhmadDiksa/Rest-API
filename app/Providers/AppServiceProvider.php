@@ -23,5 +23,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Route::aliasMiddleware('auth.basic', AuthenticateWithBasicAuth::class);
+        Route::aliasMiddleware('api.key', \App\Http\Middleware\ApiKeyMiddleware::class);
     }
 }

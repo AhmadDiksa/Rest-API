@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DosenController extends Controller
 {
@@ -26,8 +27,22 @@ class DosenController extends Controller
     // POST: Menambahkan data dosen
     public function store(Request $request)
     {
-        $dosen = Dosen::create($request->all());
-        return response()->json($dosen, 201);
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:255',
+            'nidn' => 'required|string|max:50|unique:dosen,nidn',
+            'email' => 'required|email|unique:dosen,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $dosen = Dosen::create($request->all());
+            return response()->json($dosen, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menambahkan data dosen', 'error' => $e->getMessage()], 500);
+        }
     }
 
     // PUT: Mengupdate data dosen
@@ -37,8 +52,23 @@ class DosenController extends Controller
         if (!$dosen) {
             return response()->json(["message" => "Data tidak ditemukan"], 404);
         }
-        $dosen->update($request->all());
-        return response()->json($dosen, 200);
+
+        $validator = Validator::make($request->all(), [
+            'nama' => 'sometimes|required|string|max:255',
+            'nidn' => 'sometimes|required|string|max:50|unique:dosen,nidn,' . $id,
+            'email' => 'sometimes|required|email|unique:dosen,email,' . $id,
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $dosen->update($request->all());
+            return response()->json($dosen, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal mengupdate data dosen', 'error' => $e->getMessage()], 500);
+        }
     }
 
     // DELETE: Menghapus data dosen
@@ -48,7 +78,12 @@ class DosenController extends Controller
         if (!$dosen) {
             return response()->json(["message" => "Data tidak ditemukan"], 404);
         }
-        $dosen->delete();
-        return response()->json(["message" => "Data berhasil dihapus"], 200);
+
+        try {
+            $dosen->delete();
+            return response()->json(["message" => "Data berhasil dihapus"], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menghapus data dosen', 'error' => $e->getMessage()], 500);
+        }
     }
 }
