@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\AuthController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -26,6 +27,18 @@ Route::middleware('api.key')->get('/data', function () {
         'message' => 'Access granted',
         'data' => 'Your protected data',
     ]);
+});
+
+// JWT Auth routes
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/protected', function () {
+        return response()->json([
+            'status' => true,
+            'message' => 'You have accessed a protected route',
+        ]);
+    });
 });
 
 
