@@ -27,7 +27,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -41,17 +46,61 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "nama",
-                                    "nidn"
+                                    "nama_dosen",
+                                    "nidn",
+                                    "email",
+                                    "alamat",
+                                    "program_studi",
+                                    "tanggal_lahir",
+                                    "jenis_kelamin",
+                                    "status",
+                                    "bidang_keahlian"
                                 ],
                                 "properties": {
-                                    "nama": {
+                                    "nama_dosen": {
                                         "type": "string",
-                                        "example": "Dr. Ahmad"
+                                        "example": "Dr. Diksa"
                                     },
                                     "nidn": {
                                         "type": "string",
                                         "example": "1234567890"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "diksa@example.com"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Jl. Merdeka No. 123"
+                                    },
+                                    "program_studi": {
+                                        "type": "string",
+                                        "example": "Teknik Informatika"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1980-05-10"
+                                    },
+                                    "jenis_kelamin": {
+                                        "type": "string",
+                                        "enum": [
+                                            "L",
+                                            "P"
+                                        ],
+                                        "example": "L"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Dosen Tetap",
+                                            "Dosen Tidak Tetap"
+                                        ],
+                                        "example": "Dosen Tetap"
+                                    },
+                                    "bidang_keahlian": {
+                                        "type": "string",
+                                        "example": "Kecerdasan Buatan"
                                     }
                                 },
                                 "type": "object"
@@ -63,10 +112,15 @@
                     "201": {
                         "description": "Dosen ditambahkan"
                     },
-                    "400": {
+                    "422": {
                         "description": "Validasi gagal"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/dosen/{id}": {
@@ -100,7 +154,12 @@
                     "404": {
                         "description": "Dosen tidak ditemukan"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -124,13 +183,50 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "nama": {
+                                    "nama_dosen": {
                                         "type": "string",
                                         "example": "Dr. Budi"
                                     },
                                     "nidn": {
                                         "type": "string",
                                         "example": "9876543210"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "budi@example.com"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Jl. Merdeka No. 123"
+                                    },
+                                    "program_studi": {
+                                        "type": "string",
+                                        "example": "Teknik Elektro"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1985-03-15"
+                                    },
+                                    "jenis_kelamin": {
+                                        "type": "string",
+                                        "enum": [
+                                            "L",
+                                            "P"
+                                        ],
+                                        "example": "L"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Dosen Tetap",
+                                            "Dosen Tidak Tetap"
+                                        ],
+                                        "example": "Dosen Tidak Tetap"
+                                    },
+                                    "bidang_keahlian": {
+                                        "type": "string",
+                                        "example": "Jaringan Komputer"
                                     }
                                 },
                                 "type": "object"
@@ -145,7 +241,12 @@
                     "404": {
                         "description": "Dosen tidak ditemukan"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -164,11 +265,236 @@
                     }
                 ],
                 "responses": {
-                    "204": {
+                    "200": {
                         "description": "Dosen dihapus"
                     },
                     "404": {
                         "description": "Dosen tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/mahasiswa": {
+            "get": {
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Menampilkan daftar mahasiswa",
+                "operationId": "5cd79af38ea07283ea41db31685fdadb",
+                "parameters": [
+                    {
+                        "name": "nama",
+                        "in": "query",
+                        "description": "Filter berdasarkan nama",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Menambahkan mahasiswa",
+                "operationId": "2b325793b6d9bd67deb73fd27727cae1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nim",
+                                    "nama",
+                                    "jenis_kelamin",
+                                    "alamat",
+                                    "tanggal_lahir",
+                                    "program_studi",
+                                    "angkatan",
+                                    "email",
+                                    "status",
+                                    "agama"
+                                ],
+                                "properties": {
+                                    "nim": {
+                                        "type": "string"
+                                    },
+                                    "nama": {
+                                        "type": "string"
+                                    },
+                                    "jenis_kelamin": {
+                                        "type": "string"
+                                    },
+                                    "alamat": {
+                                        "type": "string"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "program_studi": {
+                                        "type": "string"
+                                    },
+                                    "angkatan": {
+                                        "type": "integer"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "agama": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Data berhasil ditambahkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                }
+            }
+        },
+        "/api/mahasiswa/nim/{nim}": {
+            "get": {
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Menampilkan data mahasiswa berdasarkan NIM",
+                "operationId": "2afe8e056b3dd889df6e99e4cef7b8e1",
+                "parameters": [
+                    {
+                        "name": "nim",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data ditemukan"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Mengupdate data mahasiswa berdasarkan NIM",
+                "operationId": "60fbdf2e61eb30ddee4bc31f2a5e5f17",
+                "parameters": [
+                    {
+                        "name": "nim",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mahasiswa"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil diupdate"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Menghapus mahasiswa berdasarkan NIM",
+                "operationId": "1751ca8f2e951ce71a52e75e2faf69b6",
+                "parameters": [
+                    {
+                        "name": "nim",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/mahasiswa/{id}": {
+            "put": {
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Mengupdate data mahasiswa berdasarkan ID",
+                "operationId": "09000b1b4250504e890bf4b52ce4e195",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mahasiswa"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil diupdate"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
                     }
                 }
             }
@@ -180,7 +506,7 @@
                 "title": "Dosen",
                 "required": [
                     "id",
-                    "nama",
+                    "nama_dosen",
                     "nidn"
                 ],
                 "properties": {
@@ -188,13 +514,50 @@
                         "type": "integer",
                         "example": 1
                     },
-                    "nama": {
+                    "nama_dosen": {
                         "type": "string",
                         "example": "Dr. Ahmad"
                     },
                     "nidn": {
                         "type": "string",
                         "example": "1234567890"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "ahmad@example.com"
+                    },
+                    "alamat": {
+                        "type": "string",
+                        "example": "Jl. Merdeka No. 123"
+                    },
+                    "program_studi": {
+                        "type": "string",
+                        "example": "Teknik Informatika"
+                    },
+                    "tanggal_lahir": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1980-01-01"
+                    },
+                    "jenis_kelamin": {
+                        "type": "string",
+                        "enum": [
+                            "L",
+                            "P"
+                        ],
+                        "example": "L"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "Dosen Tetap",
+                            "Dosen Tidak Tetap"
+                        ],
+                        "example": "Dosen Tetap"
+                    },
+                    "bidang_keahlian": {
+                        "type": "string",
+                        "example": "Kecerdasan Buatan"
                     },
                     "created_at": {
                         "type": "string",
@@ -206,6 +569,71 @@
                     }
                 },
                 "type": "object"
+            },
+            "Mahasiswa": {
+                "required": [
+                    "nim",
+                    "nama",
+                    "jenis_kelamin",
+                    "alamat",
+                    "tanggal_lahir",
+                    "program_studi",
+                    "angkatan",
+                    "email",
+                    "status",
+                    "agama"
+                ],
+                "properties": {
+                    "nim": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "nama": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "jenis_kelamin": {
+                        "type": "string",
+                        "example": "L"
+                    },
+                    "alamat": {
+                        "type": "string",
+                        "example": "Jl. Merdeka 123"
+                    },
+                    "tanggal_lahir": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01"
+                    },
+                    "program_studi": {
+                        "type": "string",
+                        "example": "Teknik Informatika"
+                    },
+                    "angkatan": {
+                        "type": "integer",
+                        "example": 2020
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "johndoe@example.com"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "Aktif"
+                    },
+                    "agama": {
+                        "type": "string",
+                        "example": "Islam"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },
@@ -213,6 +641,10 @@
         {
             "name": "Dosen",
             "description": "Operasi CRUD untuk data dosen"
+        },
+        {
+            "name": "Mahasiswa",
+            "description": "Mahasiswa"
         }
     ]
 }

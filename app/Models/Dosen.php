@@ -9,6 +9,6 @@ class Dosen extends Model
 {
     use HasFactory;
     protected $table = 'dosen'; // Menyesuaikan nama tabel
-    protected $fillable = ['nama', 'nidn', 'email']; // Mass assignment
+    protected $fillable = ['nama_dosen', 'nidn', 'email', 'alamat', 'program_studi', 'tanggal_lahir', 'jenis_kelamin', 'status', 'bidang_keahlian']; // Mass assignment
 }
 

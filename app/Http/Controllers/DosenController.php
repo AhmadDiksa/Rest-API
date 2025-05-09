@@ -22,49 +22,55 @@ use Illuminate\Support\Facades\Validator;
  *   schema="Dosen",
  *   type="object",
  *   title="Dosen",
- *   required={"id", "nama", "nidn"},
+ *   required={"id", "nama_dosen", "nidn"},
  *   @OA\Property(property="id", type="integer", example=1),
- *   @OA\Property(property="nama", type="string", example="Dr. Ahmad"),
+ *   @OA\Property(property="nama_dosen", type="string", example="Dr. Ahmad"),
  *   @OA\Property(property="nidn", type="string", example="1234567890"),
+ *   @OA\Property(property="email", type="string", example="ahmad@example.com"),
+ *   @OA\Property(property="alamat", type="string", example="Jl. Merdeka No. 123"),
+ *   @OA\Property(property="program_studi", type="string", example="Teknik Informatika"),
+ *   @OA\Property(property="tanggal_lahir", type="string", format="date", example="1980-01-01"),
+ *   @OA\Property(property="jenis_kelamin", type="string", enum={"L", "P"}, example="L"),
+ *   @OA\Property(property="status", type="string", enum={"Dosen Tetap", "Dosen Tidak Tetap"}, example="Dosen Tetap"),
+ *   @OA\Property(property="bidang_keahlian", type="string", example="Kecerdasan Buatan"),
  *   @OA\Property(property="created_at", type="string", format="date-time"),
  *   @OA\Property(property="updated_at", type="string", format="date-time")
  * )
+ *
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
  */
-
 class DosenController extends Controller
 {
-    // GET: Menampilkan semua data dosen
-
     /**
      * @OA\Get(
-     * path="/api/dosen",
-     * tags={"Dosen"},
-     * summary="Ambil semua data dosen",
-     * @OA\Response(
-     * response=200,
-     * description="Daftar dosen",
-     * @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Dosen"))
-      * )
-        * )
-    */
-
+     *     security={{"bearerAuth":{}}},
+     *     path="/api/dosen",
+     *     tags={"Dosen"},
+     *     summary="Ambil semua data dosen",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Daftar dosen",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Dosen"))
+     *     )
+     * )
+     */
     public function index()
     {
         return response()->json(Dosen::all(), 200);
     }
 
-    // GET: Menampilkan data dosen berdasarkan ID
     /**
      * @OA\Get(
+     *     security={{"bearerAuth":{}}},
      *     path="/api/dosen/{id}",
      *     tags={"Dosen"},
      *     summary="Ambil data dosen berdasarkan ID",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\Response(response=200, description="Dosen ditemukan", @OA\JsonContent(ref="#/components/schemas/Dosen")),
      *     @OA\Response(response=404, description="Dosen tidak ditemukan")
      * )
@@ -78,30 +84,43 @@ class DosenController extends Controller
         return response()->json($dosen, 200);
     }
 
-    // POST: Menambahkan data dosen
     /**
      * @OA\Post(
+     *     security={{"bearerAuth":{}}},
      *     path="/api/dosen",
      *     tags={"Dosen"},
      *     summary="Tambah dosen baru",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"nama", "nidn"},
-     *             @OA\Property(property="nama", type="string", example="Dr. Ahmad"),
-     *             @OA\Property(property="nidn", type="string", example="1234567890")
+     *             required={"nama_dosen", "nidn", "email", "alamat", "program_studi", "tanggal_lahir", "jenis_kelamin", "status", "bidang_keahlian"},
+     *             @OA\Property(property="nama_dosen", type="string", example="Dr. Diksa"),
+     *             @OA\Property(property="nidn", type="string", example="1234567890"),
+     *             @OA\Property(property="email", type="string", example="diksa@example.com"),
+     *             @OA\Property(property="alamat", type="string", example="Jl. Merdeka No. 123"),
+     *             @OA\Property(property="program_studi", type="string", example="Teknik Informatika"),
+     *             @OA\Property(property="tanggal_lahir", type="string", format="date", example="1980-05-10"),
+     *             @OA\Property(property="jenis_kelamin", type="string", enum={"L", "P"}, example="L"),
+     *             @OA\Property(property="status", type="string", enum={"Dosen Tetap", "Dosen Tidak Tetap"}, example="Dosen Tetap"),
+     *             @OA\Property(property="bidang_keahlian", type="string", example="Kecerdasan Buatan")
      *         )
      *     ),
      *     @OA\Response(response=201, description="Dosen ditambahkan"),
-     *     @OA\Response(response=400, description="Validasi gagal")
+     *     @OA\Response(response=422, description="Validasi gagal")
      * )
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
+            'nama_dosen' => 'required|string|max:255',
             'nidn' => 'required|string|max:50|unique:dosen,nidn',
             'email' => 'required|email|unique:dosen,email',
+            'alamat' => 'required|string|max:255',
+            'program_studi' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
+            'status' => 'required|in:Dosen Tetap,Dosen Tidak Tetap',
+            'bidang_keahlian' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -116,9 +135,9 @@ class DosenController extends Controller
         }
     }
 
-    // PUT: Mengupdate data dosen
     /**
      * @OA\Put(
+     *     security={{"bearerAuth":{}}},
      *     path="/api/dosen/{id}",
      *     tags={"Dosen"},
      *     summary="Update data dosen",
@@ -126,8 +145,15 @@ class DosenController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="nama", type="string", example="Dr. Budi"),
-     *             @OA\Property(property="nidn", type="string", example="9876543210")
+     *             @OA\Property(property="nama_dosen", type="string", example="Dr. Budi"),
+     *             @OA\Property(property="nidn", type="string", example="9876543210"),
+     *             @OA\Property(property="email", type="string", example="budi@example.com"),
+     *             @OA\Property(property="alamat", type="string", example="Jl. Merdeka No. 123"),
+     *             @OA\Property(property="program_studi", type="string", example="Teknik Elektro"),
+     *             @OA\Property(property="tanggal_lahir", type="string", format="date", example="1985-03-15"),
+     *             @OA\Property(property="jenis_kelamin", type="string", enum={"L", "P"}, example="L"),
+     *             @OA\Property(property="status", type="string", enum={"Dosen Tetap", "Dosen Tidak Tetap"}, example="Dosen Tidak Tetap"),
+     *             @OA\Property(property="bidang_keahlian", type="string", example="Jaringan Komputer")
      *         )
      *     ),
      *     @OA\Response(response=200, description="Dosen diperbarui"),
@@ -142,9 +168,15 @@ class DosenController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'nama' => 'sometimes|required|string|max:255',
+            'nama_dosen' => 'sometimes|required|string|max:255',
             'nidn' => 'sometimes|required|string|max:50|unique:dosen,nidn,' . $id,
             'email' => 'sometimes|required|email|unique:dosen,email,' . $id,
+            'alamat' => 'sometimes|required|string|max:255',
+            'program_studi' => 'sometimes|required|string|max:255',
+            'tanggal_lahir' => 'sometimes|required|date',
+            'jenis_kelamin' => 'sometimes|required|in:L,P',
+            'status' => 'sometimes|required|in:Dosen Tetap,Dosen Tidak Tetap',
+            'bidang_keahlian' => 'sometimes|required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -159,14 +191,14 @@ class DosenController extends Controller
         }
     }
 
-    // DELETE: Menghapus data dosen
     /**
      * @OA\Delete(
+     *     security={{"bearerAuth":{}}},
      *     path="/api/dosen/{id}",
      *     tags={"Dosen"},
      *     summary="Hapus dosen",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=204, description="Dosen dihapus"),
+     *     @OA\Response(response=200, description="Dosen dihapus"),
      *     @OA\Response(response=404, description="Dosen tidak ditemukan")
      * )
      */
